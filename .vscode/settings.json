@@ -1,0 +1,6 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "./programs/rewards-center/Cargo.toml"
+    ],
+    "rust-analyzer.showUnlinkedFileNotification": false
+}
