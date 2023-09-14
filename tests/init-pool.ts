@@ -30,7 +30,7 @@ describe("Pool", () => {
       });
     const wallet = NodeWallet.local();
     let provider = new anchor.AnchorProvider(connection, wallet, options);
-    const programId = new PublicKey("648a7xE2sSERhxeXWKtnptDA1cJT2dUAgq9sJ558en9q");
+    const programId = new PublicKey("EMw5PpPu7E92uBKYQbLWv6ioghSDehJr1PL7fDvhC6CK");
     let program = new anchor.Program(IDL, programId, provider);
 
     const owner = Keypair.fromSecretKey(bs58.decode("2jgPdKQQE9fqgj8jtj6hESw8z7ibv7b6rQVxpPgxrTjGqyeq61uVcqGbm7JQ7egiD3cwFYbtPcQotyJEX9QbUXdv"))

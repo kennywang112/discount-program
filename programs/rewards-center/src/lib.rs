@@ -8,13 +8,15 @@ pub mod reward_distribution;
 pub use reward_distribution::*;
 pub mod payment;
 pub use payment::*;
+pub mod discount;
+pub use discount::*;
 
 pub mod errors;
 pub mod utils;
 
 use anchor_lang::prelude::*;
 
-declare_id!("648a7xE2sSERhxeXWKtnptDA1cJT2dUAgq9sJ558en9q");
+declare_id!("EMw5PpPu7E92uBKYQbLWv6ioghSDehJr1PL7fDvhC6CK");
 
 
 #[program]
@@ -31,6 +33,10 @@ pub mod cardinal_rewards_center {
     }
     pub fn close_stake_pool(ctx: Context<CloseStakePoolCtx>) -> Result<()> {
         stake_pool::close_stake_pool::handler(ctx)
+    }
+
+    pub fn init_discount(ctx: Context<InitDiscountCtx>, ix:InitDiscountIx) -> Result<()> {
+        discount::init_discount::handler(ctx, ix)
     }
 
     //// stake_entry ////

@@ -1,9 +1,9 @@
-use crate::assert_payment_info;
+// use crate::assert_payment_info;
 use crate::errors::ErrorCode;
 use crate::reward_distribution::RewardDistributor;
 use crate::reward_distribution::REWARD_DISTRIBUTOR_SEED;
 use crate::reward_distribution::REWARD_DISTRIBUTOR_SIZE;
-use crate::Action;
+// use crate::Action;
 use crate::StakePool;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
