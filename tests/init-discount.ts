@@ -21,7 +21,7 @@ import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
 
 describe("Pool", () => {
 
-    let discountIdentifier = `test`;
+    let discountIdentifier = `kikikiki`;
     const options = anchor.AnchorProvider.defaultOptions();
     const commitment: Commitment = "processed";
     let connection = new Connection("http://localhost:8899", {
@@ -41,12 +41,12 @@ describe("Pool", () => {
               utils.bytes.utf8.encode(discountIdentifier),
             ],
             programId
-          )[0];
+        )[0];
 
         const tx = new Transaction();
         const ix = await program.methods
             .initDiscount({
-                discountStr: 'test',
+                discountStr: 'discount',
                 authority: provider.wallet.publicKey,
                 identifier: discountIdentifier
             })
@@ -60,7 +60,61 @@ describe("Pool", () => {
         console.log(ix)
         await executeTransaction(provider.connection, tx, provider.wallet);
 
-        
     });
+
+    it("Init pool", async () => {
+
+      const discountId = PublicKey.findProgramAddressSync(
+        [
+          utils.bytes.utf8.encode("discount-prefix"),
+          utils.bytes.utf8.encode(discountIdentifier),
+        ],
+        programId
+      )[0];
+      const owner = Keypair.fromSecretKey(bs58.decode("2jgPdKQQE9fqgj8jtj6hESw8z7ibv7b6rQVxpPgxrTjGqyeq61uVcqGbm7JQ7egiD3cwFYbtPcQotyJEX9QbUXdv"))
+      let balance = null;
+
+      balance = await connection.getBalance(wallet.publicKey)
+      console.log(balance/LAMPORTS_PER_SOL)
+
+      const remain = [
+        {
+          pubkey: discountId,
+          isSigner: false,
+          isWritable: false,
+        },
+      ]
+
+      const tx = new Transaction();
+      const stakePoolId = findStakePoolId(discountIdentifier);
+      const ix = await program.methods
+          .initPool({
+          identifier: discountIdentifier,
+          allowedCollections: [],
+          allowedCreators: [],
+          requiresAuthorization: false,
+          authority: provider.wallet.publicKey,
+          resetOnUnstake: false,
+          cooldownSeconds: null,
+          minStakeSeconds: null,
+          endDate: null,
+          stakePaymentInfo: SOL_PAYMENT_INFO,
+          unstakePaymentInfo: SOL_PAYMENT_INFO,
+          })
+          .accounts({
+          owner: owner.publicKey,
+          stakePool: stakePoolId,
+          payer: wallet.publicKey,
+          systemProgram: SystemProgram.programId,
+          })
+          .remainingAccounts(remain)
+          .instruction();
+      tx.add(ix);
+      await executeTransaction(provider.connection, tx, provider.wallet);
+
+      balance = await connection.getBalance(wallet.publicKey)
+      console.log(balance/LAMPORTS_PER_SOL)
+      
+  });
 
 })

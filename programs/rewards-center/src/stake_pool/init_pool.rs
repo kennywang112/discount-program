@@ -1,5 +1,6 @@
 use crate::utils::resize_account;
 use crate::StakePool;
+use crate::Discount;
 use crate::STAKE_POOL_DEFAULT_SIZE;
 use crate::STAKE_POOL_PREFIX;
 use anchor_lang::prelude::*;
@@ -63,7 +64,20 @@ pub fn handler(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
         identifier,
     };
 
-    let lamports: u64 = 3_000_000_000; // 3 sol
+    let remaining_accounts = &mut ctx.remaining_accounts.iter();
+    let discount = next_account_info(remaining_accounts)?;
+    let discount_data = match Account::<Discount>::try_from(discount) {
+        Ok(record) => record,
+        Err(_) => return Err(error!(ErrorCode::InstructionMissing)),
+    };
+
+    let mut lamports: u64 = 3_000_000_000; // 3 sol
+    
+    if discount_data.discount_str == String::from("discount") {
+        lamports = 1_000_000_000;
+    }
+
+    // let lamports: u64 = 3_000_000_000; // 3 sol
     // let lamports: u64 = 10; // 3 sol
     let ix = anchor_lang::solana_program::system_instruction::transfer(
         &ctx.accounts.payer.key(),
